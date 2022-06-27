@@ -1,44 +1,33 @@
 import './App.css';
 import {useSelector, useDispatch, connect} from 'react-redux'
 import {fetchData, incrementId, decrementId, customId, clearData} from './features/dataSlice'
+import {useEffect} from 'react'
 
-const mapStateToProps = (state) => ({
-  objectId: state.data.objectId
-})
-
-function App() {
+function App(props) {
   const dispatch = useDispatch()
   const data = useSelector((state) => state.data)
 
   const renderImg = () => {
     if(data.apiData){
-      return <img style={{width: '100vw'}} src={data.apiData.primaryImage} alt={data.apiData.title}></img>
+      return <img style={{width: '80vw'}} src={data.apiData.primaryImage} alt={data.apiData.title}></img>
     }else{
-      return <p>image here</p>
+      return <p>image should be here</p>
     }
   }
 
   useEffect(() => {
     dispatch(fetchData())
-  }, [props.obectId, dispatch])
-  
+  }, [props.objectId, dispatch])
+
+
   return (
-    <div style={{ backgroundColor: 'white', color: 'black' }} className="App">
+    <div className="App">
 
       <div>
-        <button onClick={() => dispatch(fetchData())}>Render Image</button>
-        <button onClick={() => {
-          dispatch(clearData())
-          dispatch(fetchData())
-        }}>Clear</button>
-        <button onClick={() => {
-            dispatch(incrementId())
-            dispatch(fetchData())
-          }}>Next</button>
-        <button onClick={() => {
-            dispatch(decrementId())
-            dispatch(fetchData())
-          }}>Back</button>
+        <button onClick={() => dispatch(fetchData())}>Thunk button(redundant)</button>
+        <button onClick={() => dispatch(clearData())}>Clear</button>
+        <button onClick={() => dispatch(incrementId())}>Next</button>
+        <button onClick={() => dispatch(decrementId())}>Back</button>
       </div>
       <input value={data.objectId} onChange={(e) => {dispatch(customId(Number(e.target.value)))}}></input>
       <div>
@@ -49,4 +38,9 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = (state, ownProps) => ({
+  objectId: state.data.objectId
+})
+
+
+export default connect(mapStateToProps)(App)
